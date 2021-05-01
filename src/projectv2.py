@@ -4,7 +4,7 @@ from sklearn.utils import resample
 import matplotlib.pyplot as plt
 
 db = []
-with open("forestfires.csv", 'r') as csvfile:
+with open("../resource/forestfires.csv", 'r') as csvfile:
   reader = csv.reader(csvfile)
   for i, row in enumerate(reader):
       if i > 0: #skipping the header
