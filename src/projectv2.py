@@ -22,19 +22,20 @@ for k in range(5):
           Y.append(1)
       else:
           Y.append(0)
-
   clf = tree.DecisionTreeClassifier(criterion = 'entropy', max_depth = 3)
   clf = clf.fit(X, Y)
-    
+  
   num_correct = 0
   for x,y in zip(X,Y):
       class_predicted = clf.predict([x])[0]
       num_correct += int(class_predicted == y)
-  accuracy = num_correct / len(bootstrapSample)
-  
-  print(accuracy)
+  accuracy = num_correct / len(db)
+
+  print(accuracy);
   tree.plot_tree(clf, feature_names=['FFMC','DMC','DC','ISI','temp','RH','wind','rain'], class_names=['no_fire','fire'], filled=True, rounded=True)
   plt.show()
+  text_representation = tree.export_text(clf, feature_names=['FFMC','DMC','DC','ISI','temp','RH','wind','rain'])
+  print(text_representation)
 
 X = []
 Y = []
@@ -59,7 +60,9 @@ for x,y in zip(X,Y):
 accuracy = num_correct / len(db)
 
 print(accuracy);
-tree.plot_tree(clf, feature_names=['DMC','temp','wind'], class_names=['no_fire','fire'], filled=True, rounded=True)
-plt.show()
+#tree.plot_tree(clf, feature_names=['DMC','temp','wind'], class_names=['no_fire','fire'], filled=True, rounded=True)
+#plt.show()
 
-#temp, wind, dmc
+
+
+
