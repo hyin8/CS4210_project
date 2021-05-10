@@ -58,7 +58,7 @@ print("Feature frequencies: " + str(feature_frequencies))
 
 #Determine columns of selected features
 top_features = sorted(range(len(feature_frequencies)), key=lambda i: feature_frequencies[i], reverse=True)[:feature_number]
-keep_col = [i+4 for i in top_features]
+keep_col = [i+3 for i in top_features]
 print("Use feature columns: " + str(keep_col))
 
 #Update training set according to selected features
