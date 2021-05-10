@@ -11,9 +11,9 @@ db = []
 test_set = []
 train_set = []
 #modifiable
-voting_rounds = 20
+fs_rounds = 20
 test_proportion = 0.25
-final_feature_number = 3
+feature_number = 3
 depth = 5
 
 #Load data
@@ -23,7 +23,7 @@ with open("../resource/forestfires.csv", 'r') as csvfile:
       if i > 0: #skipping the header
           temp = []
           for k,value in enumerate(row):
-              if k > 3:
+              if k > 3: #ignore the first four features
                   temp.append(float(value))
           db.append(temp)
           
@@ -38,7 +38,7 @@ for instance in range(split_test_total):
 #Feature Selection 
 feature_frequencies = [0,0,0,0,0,0,0,0]
 features = ['FFMC','DMC','DC','ISI','temp','RH','wind','rain']
-for k in range(voting_rounds):
+for k in range(fs_rounds):
   X_training = []
   Y_training = []
   bootstrapSample = resample(train_set, n_samples=len(train_set), replace=True)
@@ -54,10 +54,10 @@ for k in range(voting_rounds):
   for i,feature in enumerate(features):
       feature_frequencies[i] += text_representation.count(feature)/2
       
-print("Feature votes: " + str(feature_frequencies))
+print("Feature frequencies: " + str(feature_frequencies))
 
 #Determine columns of selected features
-top_features = sorted(range(len(feature_frequencies)), key=lambda i: feature_frequencies[i], reverse=True)[:final_feature_number]
+top_features = sorted(range(len(feature_frequencies)), key=lambda i: feature_frequencies[i], reverse=True)[:feature_number]
 keep_col = [i+4 for i in top_features]
 print("Use feature columns: " + str(keep_col))
 
