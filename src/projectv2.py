@@ -39,11 +39,14 @@ with open("../resource/forestfires.csv", 'r') as csvfile:
           #natural log transform function
           y.append(math.log(float(row[-1])+1))
 
+#Standardize attributes to have a mean of zero and a standard deviation of one
+X_std = preprocessing.scale(X)
+
 #Feature Selection
 fs_totals = [0,0,0,0,0,0,0,0,0,0,0,0]
 for fs_round in range(fs_rounds):
     fs = SelectKBest(score_func=f_regression, k=final_dim)
-    fs.fit(X, y)
+    fs.fit(X_std, y)
     for i,score in enumerate(fs.scores_):
         fs_totals[i] += score
 fs_avgscores = [i/fs_rounds for i in fs_totals]
@@ -54,7 +57,7 @@ print("Use feature columns: " + str(keep_col))
 
 #Update X according to selected features
 X_fs = []
-for instance in X:
+for instance in X_std:
     temp = []
     for k,value in enumerate(instance):
         if k in keep_col:
@@ -66,20 +69,17 @@ for kf_round in range(kf_rounds):
     print("Round " + str(kf_round+1))
     kf = KFold(n_splits=10, shuffle=True)
     kf.split(X_fs,y)
-    for train_index, test_index in kf.split(X):
+    for train_index, test_index in kf.split(X_fs):
         X_train = []
         y_train = []
         for index in train_index:
-            X_train.append(X[index])
+            X_train.append(X_fs[index])
             y_train.append(y[index])
         X_test = []
         y_test = []
         for index in test_index:
-            X_test.append(X[index])
+            X_test.append(X_fs[index])
             y_test.append(y[index])
-    
-        X_train_std = preprocessing.scale(X_train)
-        X_test_std = preprocessing.scale(X_test)
         
         #Determine best parameters for svr
         c = [1, 5, 10]
@@ -91,30 +91,30 @@ for kf_round in range(kf_rounds):
             for degree_value in degree: #iterates over degree
                 for kernel_type in kernel: #iterates kernel
                     svr = svm.SVR(C=c_value, degree=degree_value, kernel=kernel_type, gamma='scale')
-                    svr.fit(X_train_std,y_train)
+                    svr.fit(X_train,y_train)
                   
                     total_error = 0
-                    for instance,target in zip(X_test_std,y_test):
+                    for instance,target in zip(X_test,y_test):
                         predicted_value = math.exp(svr.predict([instance])[0])-1
                         target_transform = math.exp(target)-1
                         total_error += abs(target_transform - predicted_value)
-                    mad = total_error/len(X_test_std)
+                    mad = total_error/len(X_test)
                     if mad < lowestMAD:
                         lowestMAD = mad
                         parameters = (c_value, degree_value, kernel_type)
         
         #Build models
         dtr = tree.DecisionTreeRegressor(max_depth=depth)
-        dtr = dtr.fit(X_train_std,y_train)
+        dtr = dtr.fit(X_train,y_train)
         svr = svm.SVR(C=parameters[0], degree=parameters[1], kernel=parameters[2], gamma='scale')
-        svr.fit(X_train_std,y_train)
+        svr.fit(X_train,y_train)
         
         #Test models
         dtr_totalError = 0
         svr_totalError = 0
         dtr_totalSE = 0
         svr_totalSE = 0
-        for instance,target in zip(X_test_std,y_test):
+        for instance,target in zip(X_test,y_test):
             #reversing natural log transformation
             dtr_prediction = math.exp(dtr.predict([instance])[0])-1
             svr_prediction = math.exp(svr.predict([instance])[0])-1
@@ -129,10 +129,10 @@ for kf_round in range(kf_rounds):
             dtr_totalSE += dtr_error*dtr_error
             svr_totalSE += svr_error*svr_error
         #saving MAD and RMSE scores
-        dtr_MADscores.append(dtr_totalError/len(X_test_std))
-        svr_MADscores.append(svr_totalError/len(X_test_std))
-        dtr_RMSEscores.append(math.sqrt(dtr_totalSE/len(X_test_std)))
-        svr_RMSEscores.append(math.sqrt(svr_totalSE/len(X_test_std)))
+        dtr_MADscores.append(dtr_totalError/len(X_test))
+        svr_MADscores.append(svr_totalError/len(X_test))
+        dtr_RMSEscores.append(math.sqrt(dtr_totalSE/len(X_test)))
+        svr_RMSEscores.append(math.sqrt(svr_totalSE/len(X_test)))
 
 #Calculte average scores
 dtr_avgMAD = sum(dtr_MADscores)/len(dtr_MADscores)
