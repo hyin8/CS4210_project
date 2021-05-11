@@ -163,6 +163,8 @@ plt.ylabel('Burned area (in hectares)')
 plt.ylim([0,20])
 plt.plot(truth_series, 'bo', label='real values')
 plt.plot(dtr_series, 'r+', label='predictions')
+plt.legend()
+plt.show()
 
 #Plot actual values and svr predictions
 plt.figure(figsize=(12,12))
@@ -172,6 +174,8 @@ plt.ylabel("Burned area (in hectares)")
 plt.ylim([0,20])
 plt.plot(truth_series, 'bo', label='real values')
 plt.plot(svr_series, 'r+', label='predictions')
+plt.legend()
+plt.show()
 
 
 
