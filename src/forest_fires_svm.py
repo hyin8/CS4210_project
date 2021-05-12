@@ -22,7 +22,7 @@ kf_rounds = 10
 
 #Retrieve user input
 n = int(input("Enter # of desired features: "))
-keep_col = list(map(int,input("\nEnter the feature columns (format: 0 1 2 ...): ").strip().split()))[:n]
+keep_col = list(map(int,input("Enter the feature columns (format: 0 1 2 ...): ").strip().split()))[:n]
 kf_rounds = int(input("Enter # of 10 fold cross validation rounds: "))
 
 #Load data
@@ -83,9 +83,12 @@ for kf_round in range(kf_rounds):
                   
                     total_error = 0
                     for instance,target in zip(X_test,y_test):
-                        predicted_value = math.exp(svr.predict([instance])[0])-1
-                        target_transform = math.exp(target)-1
-                        total_error += abs(target_transform - predicted_value)
+                        try:
+                            predicted_value = math.exp(svr.predict([instance])[0])-1
+                            target_transform = math.exp(target)-1
+                            total_error += abs(target_transform - predicted_value)
+                        except OverflowError:
+                            pass
                     mad = total_error/len(X_test)
                     if mad < lowestMAD:
                         lowestMAD = mad
@@ -99,15 +102,18 @@ for kf_round in range(kf_rounds):
         svr_totalError = 0
         svr_totalSE = 0
         for instance,target in zip(X_test,y_test):
-            #reversing natural log transformation
-            svr_prediction = math.exp(svr.predict([instance])[0])-1
-            target_transform = math.exp(target)-1
-            #populating series for later plotting
-            Y_series.append([target_transform,svr_prediction])
-            #totaling errors
-            svr_error = target_transform - svr_prediction
-            svr_totalError += abs(svr_error)
-            svr_totalSE += svr_error*svr_error
+            try:
+                #reversing natural log transformation
+                svr_prediction = math.exp(svr.predict([instance])[0])-1
+                target_transform = math.exp(target)-1
+                #populating series for later plotting
+                Y_series.append([target_transform,svr_prediction])
+                #totaling errors
+                svr_error = target_transform - svr_prediction
+                svr_totalError += abs(svr_error)
+                svr_totalSE += svr_error*svr_error
+            except OverflowError:
+                pass
         #saving MAD and RMSE scores
         svr_MADscores.append(svr_totalError/len(X_test))
         svr_RMSEscores.append(math.sqrt(svr_totalSE/len(X_test)))

@@ -22,7 +22,7 @@ depth = None
 
 #Retrieve user input
 n = int(input("Enter # of desired features: "))
-keep_col = list(map(int,input("\nEnter the feature columns (format: 0 1 2 ...): ").strip().split()))[:n]
+keep_col = list(map(int,input("Enter the feature columns (format: 0 1 2 ...): ").strip().split()))[:n]
 kf_rounds = int(input("Enter # of 10 fold cross validation rounds: "))
 depth = int(input("Enter depth of decision tree (3 is reccomended): "))
 
