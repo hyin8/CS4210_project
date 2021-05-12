@@ -22,32 +22,32 @@ def translateMonthAndDay(df):
 	df.day = df.day.map(day_dict)
 	return df
 
-
-def correlation_heatmap(train):
-    correlations = train.corr()
-
-    fig, ax = plt.subplots(figsize=(10,10))
-    sns.heatmap(correlations, vmax=1.0, center=0, fmt='.2f',
-                square=True, linewidths=.5, annot=True, cbar_kws={"shrink": .70})
-    plt.show()
+def correlation_heatmap(train, method):
+	correlations = train.corr(method)
+	fig, ax = plt.subplots(figsize=(10,10))
+	sns.heatmap(correlations, vmax=1.0, center=0, fmt='.2f',square=True, linewidths=.5, annot=True, cbar_kws={"shrink": .70})
+	plt.title(method)
+	plt.show()
 
 col_remove = []
-
 df = pd.read_csv("../resource/forestfires.csv")
 df = remove_col_by_name(df,col_remove)
 df = translateMonthAndDay(df)
 print(df)
 #export to file
-with open('../export/pearson_cof.csv', 'w') as f:
-	with redirect_stdout(f):
-		print(df.corr("pearson").to_csv())
+# with open('../export/pearson_cof.csv', 'w') as f:
+# 	with redirect_stdout(f):
+# 		print(df.corr("pearson").to_csv())
 
-with open('../export/spearman_cof.csv', 'w') as f:
-	with redirect_stdout(f):
-		print(df.corr("spearman").to_csv())
+# with open('../export/spearman_cof.csv', 'w') as f:
+# 	with redirect_stdout(f):
+# 		print(df.corr("spearman").to_csv())
 		
-with open('../export/kendall_cof.csv', 'w') as f:
-	with redirect_stdout(f):
-		print(df.corr("kendall").to_csv())
+# with open('../export/kendall_cof.csv', 'w') as f:
+# 	with redirect_stdout(f):
+# 		print(df.corr("kendall").to_csv())
 
-correlation_heatmap(df)
+methods = ["pearson","spearman","kendall"]
+
+for m in methods:
+	correlation_heatmap(df,m)
