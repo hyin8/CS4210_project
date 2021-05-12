@@ -12,6 +12,17 @@ def remove_col_by_name(df, cols):
 		df = df.drop(col,axis=1)
 	return df
 
+#Input : DataFrame
+#Ouput : DataFrame with month and day change to numbers
+def translateMonthAndDay(df):
+	month_dict = {'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,
+              'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12,}
+	day_dict = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7}
+	df.month = df.month.map(month_dict)
+	df.day = df.day.map(day_dict)
+	return df
+
+
 def correlation_heatmap(train):
     correlations = train.corr()
 
@@ -20,10 +31,12 @@ def correlation_heatmap(train):
                 square=True, linewidths=.5, annot=True, cbar_kws={"shrink": .70})
     plt.show()
 
-col_remove = ["X","Y"]
+col_remove = []
+
 df = pd.read_csv("../resource/forestfires.csv")
 df = remove_col_by_name(df,col_remove)
-
+df = translateMonthAndDay(df)
+print(df)
 #export to file
 with open('../export/pearson_cof.csv', 'w') as f:
 	with redirect_stdout(f):
