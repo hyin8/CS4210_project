@@ -1,0 +1,40 @@
+f_regression gives 2 5 9 6
+
+month	DMC(rain,rh,temp)	RH	DC(rain,temp)
+
+Test:
+1
+month	DMC	RH	DC		2 5 9 6
+SVM w/ best parameters:
+average MAD = 12.711061403453884
+average RMSE = 47.80117322151191
+
+2
+month	DMC	wind			2 5 10
+SVM w/ best parameters:
+average MAD = 12.671065593300439
+average RMSE = 46.32657500320236
+
+3
+month	DC	wind			2 6 10
+SVM w/ best parameters:
+average MAD = 12.66581493143169
+average RMSE = 47.63592755853403
+
+4
+month	DC	RH			2 6 9
+SVM w/ best parameters:
+average MAD = 12.690523888232464
+average RMSE = 47.536607210704936
+
+5
+month	RH	wind	temp		2 9 10 8
+SVM w/ best parameters:
+average MAD = 12.698216690381752
+average RMSE = 46.281233407088294
+
+6
+month	wind	rain	temp		2 10 11 8
+SVM w/ best parameters:
+average MAD = 12.709628417692223
+average RMSE = 46.54091100218648

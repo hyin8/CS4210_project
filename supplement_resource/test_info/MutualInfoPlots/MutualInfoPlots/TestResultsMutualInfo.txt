@@ -1,0 +1,22 @@
+mutual_info_regression gives 7 2 5 6
+
+ISI(rain,rh,temp,wind)	month	DMC(rain,rh,temp)	DC(rain,temp)
+
+Test:
+1
+ISI	month	DMC	DC		7 2 5 6
+SVM w/ best parameters:
+average MAD = 12.676810324743283
+average RMSE = 46.68219044402471
+
+2
+ISI	month	X	Y		7 2 0 1
+SVM w/ best parameters:
+average MAD = 12.622758918927781
+average RMSE = 46.394068218055324
+
+3
+ISI	month				7 2
+SVM w/ best parameters:
+average MAD = 12.64029703502647
+average RMSE = 47.40271686264689
