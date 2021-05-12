@@ -5,6 +5,13 @@ from contextlib import redirect_stdout
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+#Input: The name of the col you want removed in a list []
+#Output: DataFrame with the col removed
+def remove_col_by_name(df, cols):
+	for col in cols:
+		df = df.drop(col,axis=1)
+	return df
+
 def correlation_heatmap(train):
     correlations = train.corr()
 
@@ -13,7 +20,9 @@ def correlation_heatmap(train):
                 square=True, linewidths=.5, annot=True, cbar_kws={"shrink": .70})
     plt.show()
 
+col_remove = ["X","Y"]
 df = pd.read_csv("../resource/forestfires.csv")
+df = remove_col_by_name(df,col_remove)
 
 #export to file
 with open('../export/pearson_cof.csv', 'w') as f:
